@@ -1,0 +1,25 @@
+{
+  "poll_interval_seconds": 300,
+  "filters": {
+    "market_cap_min": 10000000,
+    "market_cap_max": 800000000,
+    "change_24h_gt": 0,
+    "perf_ytd_lt": -30,
+    "vol_change_24h_gt": 20,
+    "long_liquidations_gt": 1000000
+  },
+  "telegram": {
+    "enabled": true,
+    "bot_token": "PASTE_YOUR_BOT_TOKEN_HERE",
+    "chat_id": "PASTE_YOUR_CHAT_ID_HERE"
+  },
+  "email": {
+    "enabled": true,
+    "smtp_host": "smtp.gmail.com",
+    "smtp_port": 587,
+    "smtp_user": "youraddress@gmail.com",
+    "smtp_password": "PASTE_YOUR_16_CHAR_APP_PASSWORD_HERE",
+    "from_addr": "youraddress@gmail.com",
+    "to_addr": "youraddress@gmail.com"
+  }
+}

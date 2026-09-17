@@ -1,0 +1,52 @@
+name: TV Coin Screener
+
+on:
+  schedule:
+    # Every 10 minutes. GitHub does not guarantee exact timing for cron,
+    # especially under high platform load -- don't rely on this for
+    # sub-minute precision.
+    - cron: "*/10 * * * *"
+  workflow_dispatch: {}   # lets you manually trigger a run from the Actions tab
+
+permissions:
+  contents: write   # needed so the workflow can commit the updated state.json
+
+jobs:
+  scan:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out repo
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Install dependencies
+        run: pip install -r requirements.txt
+
+      - name: Run screener (single pass)
+        env:
+          RUN_ONCE: "1"
+          TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
+          TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
+          EMAIL_SMTP_USER: ${{ secrets.EMAIL_SMTP_USER }}
+          EMAIL_SMTP_PASSWORD: ${{ secrets.EMAIL_SMTP_PASSWORD }}
+          EMAIL_SMTP_HOST: ${{ secrets.EMAIL_SMTP_HOST }}
+          EMAIL_SMTP_PORT: ${{ secrets.EMAIL_SMTP_PORT }}
+          EMAIL_FROM: ${{ secrets.EMAIL_FROM }}
+          EMAIL_TO: ${{ secrets.EMAIL_TO }}
+        run: python3 tv_new_coin_alert.py
+
+      - name: Commit updated state.json (if changed)
+        run: |
+          git config user.name "screener-bot"
+          git config user.email "actions@users.noreply.github.com"
+          if ! git diff --quiet -- state.json; then
+            git add state.json
+            git commit -m "Update screener state [skip ci]"
+            git push
+          else
+            echo "No state change, nothing to commit."
+          fi
