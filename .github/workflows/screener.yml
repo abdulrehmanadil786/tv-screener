@@ -2,14 +2,11 @@ name: TV Coin Screener
 
 on:
   schedule:
-    # Every 10 minutes. GitHub does not guarantee exact timing for cron,
-    # especially under high platform load -- don't rely on this for
-    # sub-minute precision.
     - cron: "*/10 * * * *"
-  workflow_dispatch: {}   # lets you manually trigger a run from the Actions tab
+  workflow_dispatch: {}
 
 permissions:
-  contents: write   # needed so the workflow can commit the updated state.json
+  contents: write
 
 jobs:
   scan:
@@ -37,8 +34,8 @@ jobs:
           EMAIL_SMTP_PORT: ${{ secrets.EMAIL_SMTP_PORT }}
           EMAIL_FROM: ${{ secrets.EMAIL_FROM }}
           EMAIL_TO: ${{ secrets.EMAIL_TO }}
-          run: python3 debug_fields.py
-          
+        run: python3 debug_fields.py
+
       - name: Commit updated state.json (if changed)
         run: |
           git config user.name "screener-bot"
