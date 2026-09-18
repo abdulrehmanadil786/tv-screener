@@ -37,8 +37,8 @@ jobs:
           EMAIL_SMTP_PORT: ${{ secrets.EMAIL_SMTP_PORT }}
           EMAIL_FROM: ${{ secrets.EMAIL_FROM }}
           EMAIL_TO: ${{ secrets.EMAIL_TO }}
-        run: python3 tv_new_coin_alert.py
-
+          run: python3 debug_fields.py
+          
       - name: Commit updated state.json (if changed)
         run: |
           git config user.name "screener-bot"
